@@ -33,7 +33,7 @@ def main():
     currentHash = hashFile(args.fileIn, args.hashType)
     print("New hash result: \n%s" % currentHash)
 
-    f = open(args.fileOut, "r")
+    f = open(args.fileOut, "r+")
     originalFile = f.read()
     hashLibrary = originalFile.split("\n")
 
