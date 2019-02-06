@@ -26,7 +26,7 @@ def main():
     parser.add_argument('-f', metavar='filein', dest='fileIn', required=True, help="name of the file to be hashed.  required.")
     parser.add_argument('-o', metavar='fileout', dest='fileOut', required=False, default='hashout.txt', help="name of output file to write result.  will use \'hashout.txt\' if none given.  Hashes will be recorded in the format 'filename,<hash>'")
     parser.add_argument('-m', metavar='hashtype', dest='hashType', type=int, required=False, default=1, help="number indicating hash type to use.\n 1\tMD5\n2\tSHA256\n3\tSHA512")
-    parser.add_argument('-r', metavar='replace', required=False, help="flag indicates that old hashes should be replaced with newly generated ones")
+    parser.add_argument('-r',  action='store_true', required=False, help="flag indicates that old hashes should be replaced with newly generated ones")
 
     args = parser.parse_args()
 
@@ -34,8 +34,9 @@ def main():
     print("New hash result: \n%s" % currentHash)
 
     f = open(args.fileOut, "r+")
-    originalFile = f.read()
-    hashLibrary = originalFile.split("\n")
+    originalFile = f.readlines()
+    f.seek(0)
+    hashLibrary = f.read().split("\n")# originalFile.split("\n")
 
     # traverse the library of hashes.  if we find the file already has a hash, compare them.
     # alert if the hash is different.
@@ -68,7 +69,7 @@ def main():
     if not found:
         f = open(args.fileOut, "a")
         f.write(args.fileIn + "," + currentHash + "\n")
-    elif args.replace is not None:
+    elif args.r is not None:
         f = open(args.fileOut, "w")
         for line in originalFile:
             if len(re.findall("^" + args.fileIn, line)) > 0:
